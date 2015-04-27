@@ -3,7 +3,7 @@
 """ Example code of how to move a robot forward for 3 seconds. """
 
 # We always import roslib, and load the manifest to handle dependencies
-import roslib; roslib.load_manifest('mini_max_tutorials')
+import roslib #; roslib.load_manifest('mini_max_tutorials')
 import rospy
 import numpy as np
 import cv2
@@ -54,7 +54,7 @@ def control_motors():
     rospy.init_node('move')
 
     # publish to cmd_vel
-    p = rospy.Publisher('cmd_vel', Twist)
+    p = rospy.Publisher('/cmd_vel_mux/input/navi', Twist, queue_size=1)
 
     # create a twist message, fill in the details
     twist = Twist()
