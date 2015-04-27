@@ -12,10 +12,10 @@ import cv2
 #  called "cmd_vel" using a message type "geometry_msgs/Twist"
 from geometry_msgs.msg import Twist
 
-x_speed = 0.1  # 0.1 m/s
+
 
 def mainloop(cap):
-    while True:
+    for i in range(500):
         _, frame = cap.read()
         cv2.imshow('frame',frame)
         _, frame = cap.read()
@@ -37,6 +37,7 @@ def mainloop(cap):
             cx = int(momt['m10']/momt['m00'])
             cy = int(momt['m01']/momt['m00'])
             diff = middle - cx
+            control_motors(calc_turn_speed(diff))
             print diff
         except ZeroDivisionError:
             pass
@@ -49,7 +50,7 @@ def mainloop(cap):
             break
 
 
-def control_motors():
+def control_motors(turn_speed):
     # first thing, init a node!
     rospy.init_node('move')
 
@@ -58,23 +59,28 @@ def control_motors():
 
     # create a twist message, fill in the details
     twist = Twist()
+    x_speed = 0.1  # 0.1 m/s
     twist.linear.x = x_speed;                   # our forward speed
-    twist.linear.y = 0; twist.linear.z = 0;     # we can't use these!        
-    twist.angular.x = 0; twist.angular.y = 0;   #          or these!
-    twist.angular.z = 0;                        # no rotation
+    twist.linear.y = 0;
+    twist.angular.z = turn_speed # positive is left
 
     # announce move, and publish the message
-    rospy.loginfo("About to be moving forward!")
-    for i in range(30):
+    rospy.loginfo("Moving at speed %d" % (turn_speed))
+#    rospy.loginfo("About to be moving forward!")
+    for i in range(10):
         p.publish(twist)
         rospy.sleep(0.1) # 30*0.1 = 3.0
-
     # create a new message
-    twist = Twist()
+#    twist = Twist()
 
     # note: everything defaults to 0 in twist, if we don't fill it in, we stop!
-    rospy.loginfo("Stopping!")
-    p.publish(twist)
+#    rospy.loginfo("Stopping!")
+#    p.publish(twist)
+
+def calc_turn_speed(diff):
+    max_diff = 240.0
+    scale = 0.5
+    return diff/max_diff * scale
 
 def cleanup(cap):
     cap.release()
@@ -82,7 +88,7 @@ def cleanup(cap):
 
 
 if __name__ == "__main__":
-    # cap = cv2.VideoCapture(0)
-    # mainloop(cap)
-    # cleanup(cap)
+    cap = cv2.VideoCapture(0)
+    mainloop(cap)
+    cleanup(cap)
     control_motors()
