@@ -24,7 +24,7 @@ def mainloop(cap):
         # Threshold to get black line
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lower_bound = np.array([0,0,0])
-        upper_bound = np.array([255,255,100])
+        upper_bound = np.array([100,100,100])
         mask = cv2.inRange(hsv, lower_bound, upper_bound)
         middle = mask.shape[0]/2
         res = cv2.bitwise_and(frame,frame, mask=mask)
@@ -80,7 +80,7 @@ def control_motors(turn_speed):
 
 def calc_turn_speed(diff):
     max_diff = 240.0
-    scale = 0.5
+    scale = 0.4
     return diff/max_diff * scale
 
 def cleanup(cap):
