@@ -12,8 +12,6 @@ import cv2
 #  called "cmd_vel" using a message type "geometry_msgs/Twist"
 from geometry_msgs.msg import Twist
 
-bathtub = 0
-
 class Follower(object):
     def __init__(self, cap):
         self.cap = cap
@@ -30,7 +28,7 @@ class Follower(object):
             # Threshold to get black line
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             lower_bound = np.array([0,0,0])
-            upper_bound = np.array([255,255,100])
+            upper_bound = np.array([100,100,100])
             mask = cv2.inRange(hsv, lower_bound, upper_bound)
             middle = mask.shape[0]/2
             res = cv2.bitwise_and(frame,frame, mask=mask)
@@ -85,7 +83,7 @@ class Follower(object):
 
     def calc_turn_speed(self, diff):
         max_diff = 240.0
-        Kp = 0.5
+        Kp = 0.4
         Ki = 0.2
         Kd = 0.1
         if self.first_term:
@@ -99,6 +97,12 @@ class Follower(object):
     def cleanup(self, cap):
         cap.release()
         cv2.destroyAllWindows()
+
+
+# def calc_turn_speed(diff):
+#     max_diff = 240.0
+#     scale = 0.4
+#     return diff/max_diff * scale
 
 
 if __name__ == "__main__":
