@@ -15,7 +15,8 @@ from geometry_msgs.msg import Twist
 
 
 def mainloop(cap):
-    for i in range(500):
+    #for i in range(500):
+    while True: 
         _, frame = cap.read()
         cv2.imshow('frame',frame)
         _, frame = cap.read()
@@ -59,13 +60,13 @@ def control_motors(turn_speed):
 
     # create a twist message, fill in the details
     twist = Twist()
-    x_speed = 0.1  # 0.1 m/s
+    x_speed = 0.05  # 0.1 m/s
     twist.linear.x = x_speed;                   # our forward speed
     twist.linear.y = 0;
     twist.angular.z = turn_speed # positive is left
 
     # announce move, and publish the message
-    rospy.loginfo("Moving at speed %d" % (turn_speed))
+    rospy.loginfo("Moving at speed %f" % (turn_speed))
 #    rospy.loginfo("About to be moving forward!")
     for i in range(10):
         p.publish(twist)
