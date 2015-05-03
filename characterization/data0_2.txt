@@ -1,0 +1,24 @@
+Current delta x is -17
+Angular vel command was 0.2
+[INFO] [WallTime: 1430679711.408816] Moving at speed 0
+-17
+Current delta x is -7
+Angular vel command was 0.2
+[INFO] [WallTime: 1430679712.538836] Moving at speed 0
+-7
+Current delta x is -44
+Angular vel command was 0.2
+[INFO] [WallTime: 1430679713.610041] Moving at speed 0
+-44
+Current delta x is -58
+Angular vel command was 0.2
+[INFO] [WallTime: 1430679714.685966] Moving at speed 0
+-58
+Current delta x is -72
+Angular vel command was 0.2
+[INFO] [WallTime: 1430679715.725005] Moving at speed 0
+-72
+Current delta x is -122
+Angular vel command was 0.2
+[INFO] [WallTime: 1430679716.817298] Moving at speed 0
+-122

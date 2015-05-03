@@ -1,27 +1,21 @@
 #!/usr/bin/env python
 
-""" Example code of how to move a robot forward for 3 seconds. """
-
-# We always import roslib, and load the manifest to handle dependencies
-import roslib #; roslib.load_manifest('mini_max_tutorials')
+import roslib
 import rospy
 import numpy as np
 import cv2
 
-# recall: robots generally take base movement commands on a topic 
-#  called "cmd_vel" using a message type "geometry_msgs/Twist"
 from geometry_msgs.msg import Twist
 
 class Follower(object):
-    def __init__(self, cap):
-        self.cap = cap
+    def __init__(self):
         self.bathtub = 0
         self.previous_error = 0
         self.first_term = True
 
-    def mainloop(self):
-        for i in range(500):
-            _, frame = self.cap.read()
+    def mainloop(self, cap):
+        for i in range(10):
+            _, frame = cap.read()
             cv2.imshow('frame',frame)
             _, frame = cap.read()
 
@@ -42,7 +36,10 @@ class Follower(object):
                 cx = int(momt['m10']/momt['m00'])
                 cy = int(momt['m01']/momt['m00'])
                 diff = middle - cx
-                control_motors(calc_turn_speed(diff))
+                print "Current delta x is", diff
+                ang_vel = 0.17
+                print "Angular vel command was", ang_vel
+                self.control_motors(ang_vel)
                 print diff
             except ZeroDivisionError:
                 pass
@@ -83,15 +80,16 @@ class Follower(object):
 
     def calc_turn_speed(self, diff):
         max_diff = 240.0
-        Kp = 0.4
-        Ki = 0.2
+        Kp = 0.2
+        Ki = 0.2        
         Kd = 0.1
         if self.first_term:
             Kd = 0  # don't know derivative term for the very first one
         error = diff/max_diff
-        delta = previous_error - error
-        bathtub += diff
-        act = Kp*error + Ki*bathtub + Kd*delta
+        delta = self.previous_error - error
+        self.bathtub += error
+        act = Kp*error + Ki*self.bathtub + Kd*delta
+        self.previous_error = error
         return act
 
     def cleanup(self, cap):
@@ -107,6 +105,6 @@ class Follower(object):
 
 if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
-    mainloop(cap)
-    cleanup(cap)
-    control_motors()
+    pinky = Follower()
+    pinky.mainloop(cap)
+    pinky.cleanup(cap)
